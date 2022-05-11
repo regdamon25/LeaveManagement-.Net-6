@@ -1,0 +1,22 @@
+﻿﻿<?xml version="1.0" encoding="utf-8" ?>
+<class>
+	<customerOrder>
+		<orderId></orderId>
+		<firstName></firstName>
+		<lastName></lastName>
+		<gender></gender>
+		<address1></address1>
+		<address2></address2>
+		<city></city>
+		<state></state>
+		<zipcode></zipcode>
+		<email></email>
+		<phone></phone>
+		<testType></testType>
+		<stripCount></stripCount>
+		<clientName></clientName>
+		<clientCarrier></clientCarrier>
+	</customerOrder>
+</class>
+
+
