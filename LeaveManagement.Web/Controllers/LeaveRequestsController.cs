@@ -87,12 +87,12 @@ namespace LeaveManagement.Web.Controllers
         }
 
         // GET: LeaveRequests/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             //This will preload data when the form loads
             var viewModel = new LeaveRequestCreateVM
             {
-                LeaveTypes = new SelectList(_context.LeaveTypes, "Id", "Name")
+                LeaveTypes = new SelectList(await _leaveTypeRepository.GetAllAsync(), "Id", "Name")
             };
 
             return View(viewModel);
