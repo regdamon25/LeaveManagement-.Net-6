@@ -51,12 +51,15 @@ namespace LeaveManagement.Web.Repositories
 
             return viewModel;
         }
+        
 
         public async Task<EmployeeAllocationVM> GetEmployeeAllocations(string employeeId)
         {
             var allocations = await _context.LeaveAllocations //running query to get all the allocations
                 .Include(q => q.LeaveType) //we included all the LeaveType details
-                .Where(q => q.EmployeeId == employeeId).ToListAsync(); // we are matching the database employee Id with the id given in the parameter
+                .Where(q => q.EmployeeId == employeeId)
+                .ToListAsync(); // we are matching the database employee Id with the id given in the parameter
+
             var employee = await _userManager.FindByIdAsync(employeeId); // we are fetching the employees record
 
             var employeeAllocationViewModel = _mapper.Map<EmployeeAllocationVM>(employee); //here we are mapping the db model to the viewmodel 
@@ -100,6 +103,11 @@ namespace LeaveManagement.Web.Repositories
             await UpdateAsync(leaveAllocation);
 
             return true;
+        }
+
+        public async Task<LeaveAllocation?> GetEmployeeAllocation(string employeeId, int leaveTypeId)
+        {
+            return await _context.LeaveAllocations.FirstOrDefaultAsync(q => q.EmployeeId == employeeId && q.LeaveTypeId == leaveTypeId);
         }
     }
 }
