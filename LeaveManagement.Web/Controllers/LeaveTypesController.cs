@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using LeaveManagement.Web.Data;
-using AutoMapper;
-using LeaveManagement.Web.Models;
-using LeaveManagement.Web.Contracts;
-using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
 using LeaveManagement.Web.Constants;
+using LeaveManagement.Web.Contracts;
+using LeaveManagement.Web.Data;
+using LeaveManagement.Web.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace LeaveManagement.Web.Controllers
 {
@@ -51,7 +46,7 @@ namespace LeaveManagement.Web.Controllers
         }
 
         // GET: LeaveTypes/Create
-        
+
         public IActionResult Create()
         {
             return View();
@@ -62,7 +57,7 @@ namespace LeaveManagement.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        
+
         public async Task<IActionResult> Create(LeaveTypeVM leaveTypeVM)
         {
             if (ModelState.IsValid)
@@ -74,7 +69,7 @@ namespace LeaveManagement.Web.Controllers
             return View(leaveTypeVM);
         }
 
-        
+
 
         // GET: LeaveTypes/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -94,7 +89,7 @@ namespace LeaveManagement.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        
+
         public async Task<IActionResult> Edit(int id, LeaveTypeVM leaveTypeVM)
         {
             if (id != leaveTypeVM.Id)
@@ -127,7 +122,7 @@ namespace LeaveManagement.Web.Controllers
 
         // GET: LeaveTypes/Delete/5
 
-        
+
         // POST: LeaveTypes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -142,7 +137,7 @@ namespace LeaveManagement.Web.Controllers
 
         public async Task<IActionResult> AllocateLeave(int id)
         {
-            
+
             //need to add a new repository
             await _leaveAllocationRepository.LeaveAllocation(id);
             return RedirectToAction(nameof(Index));

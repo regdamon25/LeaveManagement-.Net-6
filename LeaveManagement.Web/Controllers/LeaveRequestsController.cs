@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using LeaveManagement.Web.Constants;
+using LeaveManagement.Web.Contracts;
+using LeaveManagement.Web.Data;
+using LeaveManagement.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using LeaveManagement.Web.Data;
-using LeaveManagement.Web.Models;
-using AutoMapper;
-using LeaveManagement.Web.Contracts;
-using Microsoft.AspNetCore.Authorization;
-using LeaveManagement.Web.Constants;
 
 namespace LeaveManagement.Web.Controllers
 {
@@ -18,13 +13,13 @@ namespace LeaveManagement.Web.Controllers
     public class LeaveRequestsController : Controller
     {
         private readonly ApplicationDbContext _context;
-       
+
         private readonly ILeaveRequestRepository _leaveRequestRepository;
         private readonly ILeaveTypeRepository _leaveTypeRepository;
 
-        public LeaveRequestsController( ILeaveRequestRepository leaveRequestRepository, ILeaveTypeRepository leaveTypeRepository)
+        public LeaveRequestsController(ILeaveRequestRepository leaveRequestRepository, ILeaveTypeRepository leaveTypeRepository)
         {
-           
+
             _leaveRequestRepository = leaveRequestRepository;
             _leaveTypeRepository = leaveTypeRepository;
         }
@@ -103,7 +98,7 @@ namespace LeaveManagement.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create( LeaveRequestCreateVM viewModel)
+        public async Task<IActionResult> Create(LeaveRequestCreateVM viewModel)
         {
             try
             {
@@ -212,14 +207,14 @@ namespace LeaveManagement.Web.Controllers
             {
                 _context.LeaveRequests.Remove(leaveRequest);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool LeaveRequestExists(int id)
         {
-          return (_context.LeaveRequests?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.LeaveRequests?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

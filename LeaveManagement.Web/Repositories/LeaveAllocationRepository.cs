@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using LeaveManagement.Web.Constants;
 using LeaveManagement.Web.Contracts;
 using LeaveManagement.Web.Data;
@@ -14,16 +15,20 @@ namespace LeaveManagement.Web.Repositories
         private readonly UserManager<Employee> _userManager;
         private readonly ILeaveTypeRepository _leaveTypeRepository;
         private readonly IMapper _mapper;
+        private readonly AutoMapper.IConfigurationProvider _configurationProvider;
 
         public LeaveAllocationRepository(ApplicationDbContext context,
                                          UserManager<Employee> userManager,
                                          ILeaveTypeRepository leaveTypeRepository,
-                                         IMapper mapper) : base(context)
+                                         IMapper mapper,
+                                         AutoMapper.IConfigurationProvider configurationProvider) : base(context)
+                                    
         {
             _context = context;
             _userManager = userManager;
             _leaveTypeRepository = leaveTypeRepository;
             _mapper = mapper;
+            _configurationProvider = configurationProvider;
         }
 
         public async Task<bool> AllocationExists(string employeeId, int leaveTypeId, int period)
@@ -35,8 +40,10 @@ namespace LeaveManagement.Web.Repositories
 
         public async Task<LeaveAllocationEditVM> GetEmployeeAllocation(int id)
         {
-            var allocation = await _context.LeaveAllocations
+            //here we are fetching all the allocations associated with the given id, we are including the LeaveType and 
+            var allocation = await _context.LeaveAllocations 
                .Include(q => q.LeaveType)
+               .ProjectTo<LeaveAllocationEditVM>(_configurationProvider)
                .FirstOrDefaultAsync(q => q.Id == id);
 
             if (allocation == null)
@@ -46,7 +53,7 @@ namespace LeaveManagement.Web.Repositories
 
             var employee = await _userManager.FindByIdAsync(allocation.EmployeeId);
 
-            var viewModel = _mapper.Map<LeaveAllocationEditVM>(allocation);
+            var viewModel = allocation; //Used ProjectTo to eliminate the extra mapping of the data model to the viewmodel
             viewModel.Employee = _mapper.Map<EmployeeListVM>(await _userManager.FindByIdAsync(allocation.EmployeeId));
 
             return viewModel;
@@ -58,12 +65,14 @@ namespace LeaveManagement.Web.Repositories
             var allocations = await _context.LeaveAllocations //running query to get all the allocations
                 .Include(q => q.LeaveType) //we included all the LeaveType details
                 .Where(q => q.EmployeeId == employeeId)
+                .ProjectTo<LeaveAllocationVM>(_configurationProvider)
                 .ToListAsync(); // we are matching the database employee Id with the id given in the parameter
+
 
             var employee = await _userManager.FindByIdAsync(employeeId); // we are fetching the employees record
 
             var employeeAllocationViewModel = _mapper.Map<EmployeeAllocationVM>(employee); //here we are mapping the db model to the viewmodel 
-            employeeAllocationViewModel.LeaveAllocations = _mapper.Map<List<LeaveAllocationVM>>(allocations); //from the return viewmodel we can add on the allocation types
+            employeeAllocationViewModel.LeaveAllocations = allocations; //from the return viewmodel we can add on the allocation types
             return employeeAllocationViewModel;
         }
 
